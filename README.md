@@ -1,444 +1,195 @@
-# IoT Water Tank Monitoring System
+# IoT Water Tank Monitoring - Backend API
 
-A full-stack IoT application for monitoring water tank levels and temperature in real-time. The system includes a FastAPI backend, React frontend dashboard, and machine learning models for water disaggregation analysis.
-
-## Project Overview
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    IoT Water Tank Monitoring Architecture                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌──────────────┐      ┌──────────────┐      ┌──────────────────────────┐ │
-│   │   IoT        │      │   FastAPI    │      │      PostgreSQL          │ │
-│   │   Sensors    │─────▶│   Backend    │◀────▶│      (Aiven Cloud)       │ │
-│   │ (ThingSpeak) │      │   (Render)   │      │                          │ │
-│   └──────────────┘      └──────────────┘      └──────────────────────────┘ │
-│                                │                                            │
-│                                │ REST API                                   │
-│                                ▼                                            │
-│                         ┌──────────────┐                                    │
-│                         │    React     │                                    │
-│                         │   Frontend   │                                    │
-│                         │  Dashboard   │                                    │
-│                         └──────────────┘                                    │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+A FastAPI-based backend service for collecting, storing, and serving IoT sensor data for water tank monitoring systems.
 
 ## Features
 
-- **Real-time Monitoring**: Live water level and temperature readings
-- **Interactive Dashboard**: React-based UI with graphs and analytics
-- **Node Management**: Create and configure multiple sensor nodes
-- **ML Models**: CNN, LSTM, and GRU models for water disaggregation
-- **Cloud Deployment**: Scalable architecture with Aiven PostgreSQL and Render
+- **Real-time Sensor Data Collection**: Automatically collects distance and temperature readings from ThingSpeak or generates test data
+- **Tank Parameter Management**: CRUD operations for tank sensor configurations
+- **RESTful API**: Clean API endpoints for frontend integration
+- **PostgreSQL Database**: Persistent storage for sensor readings and tank parameters
+- **Background Data Collection**: Daemon thread continuously fetches sensor data
+- **CORS Support**: Configured for cross-origin requests from frontend applications
+
+## Tech Stack
+
+- **Framework**: FastAPI
+- **Database**: PostgreSQL with psycopg2
+- **Server**: Uvicorn ASGI server
+- **Data Validation**: Pydantic models
+
+## Prerequisites
+
+- Python 3.8+
+- PostgreSQL database server
+- pip package manager
+
+## Installation
+
+1. **Clone the repository** and navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. **Create a virtual environment** (recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up PostgreSQL database**:
+   - Create a database named `iot-test`
+   - Update connection settings in `main.py` if needed:
+     ```python
+     host="localhost",
+     database="iot-test",
+     user="postgres",
+     password="postgres"
+     ```
+
+## Configuration
+
+Edit the following variables in [`main.py`](main.py) to customize behavior:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TEST_MODE` | Use generated test data instead of ThingSpeak | `True` |
+| `NODE_ID` | Default sensor node identifier | `"NODE_001"` |
+| `url` | ThingSpeak API endpoint | ThingSpeak channel URL |
+
+## Running the Server
+
+Start the FastAPI server:
+
+```bash
+python main.py
+```
+
+Or using uvicorn directly:
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The API will be available at `http://localhost:8000`
+
+## API Endpoints
+
+### Sensor Data
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/sensor-data` | Get all sensor readings (latest 100) |
+| `GET` | `/sensor-data?node_id={id}` | Get sensor readings for specific node |
+
+**Response Example:**
+```json
+[
+  {
+    "id": 1,
+    "node_id": "NODE_001",
+    "distance": 94.5,
+    "temperature": 20.8,
+    "created_at": "2024-01-15T10:30:00"
+  }
+]
+```
+
+### Tank Parameters
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/tank-parameters` | Get all tank configurations |
+| `POST` | `/tank-parameters` | Create new tank configuration |
+
+**POST Request Body:**
+```json
+{
+  "node_id": "NODE_001",
+  "tank_height_cm": 200,
+  "tank_length_cm": 100,
+  "tank_width_cm": 100,
+  "lat": 17.4474,
+  "long": 78.3491
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Tank parameters inserted successfully",
+  "id": 1
+}
+```
+
+## Database Schema
+
+### sensor_data
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL | Primary key |
+| node_id | VARCHAR(50) | Sensor node identifier |
+| field1 | FLOAT | Distance reading (cm) |
+| field2 | FLOAT | Temperature reading (°C) |
+| created_at | TIMESTAMP | Reading timestamp |
+
+### tank_sensorparameters
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL | Primary key |
+| node_id | VARCHAR(50) | Tank node identifier |
+| tank_height_cm | FLOAT | Tank height in cm |
+| tank_length_cm | FLOAT | Tank length in cm |
+| tank_width_cm | FLOAT | Tank width in cm |
+| lat | FLOAT | GPS latitude |
+| long | FLOAT | GPS longitude |
+
+## API Documentation
+
+FastAPI provides automatic interactive documentation:
+
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
 
 ## Project Structure
 
 ```
-├── backend/           # FastAPI backend service
-├── frontend/          # React dashboard application
-└── ml_model/          # Machine learning notebooks and models
+backend/
+├── main.py           # Main application file with all endpoints
+├── requirements.txt  # Python dependencies
+├── README.md         # This file
+└── api/              # Additional API modules (if any)
 ```
 
----
+## Development
 
-## Deployment Guide
+### Test Mode
 
-Follow these steps in order to deploy the complete application.
+When `TEST_MODE = True`, the sensor collector generates random data around base values:
+- Distance: 94.0 cm ± 10 cm
+- Temperature: 20.8°C ± 2°C
 
----
+Data is collected every 20 seconds.
 
-## Step 1: Create PostgreSQL Instance on Aiven (Free Tier)
+### Switching to Real Data
 
-### 1.1 Create Aiven Account
+1. Set `TEST_MODE = False` in [`main.py`](main.py)
+2. Configure your ThingSpeak channel URL
+3. Ensure ThingSpeak API key is correct
 
-1. Go to [https://aiven.io/](https://aiven.io/)
-2. Click **"Start Free"** or **"Sign Up"**
-3. Sign up using:
-   - Google account
-   - GitHub account
-   - Email and password
-4. Verify your email if required
+## Integration with Frontend
 
-### 1.2 Create a Free PostgreSQL Service
+This backend is designed to work with the React frontend in the `../frontend` directory. The frontend expects:
 
-1. After logging in, you'll be on the Aiven Console dashboard
-2. Click **"Create Service"** button
-3. Select **"PostgreSQL"** from the service list
-4. Configure the service:
-
-   | Setting | Value |
-   |---------|-------|
-   | **Cloud Provider** | Choose any (AWS, Google Cloud, Azure, DigitalOcean) |
-   | **Region** | Select the closest region to your users |
-   | **Plan** | Select **"Free"** (Hobbyist plan - $0/month) |
-   | **Service Name** | `iot-water-tank-db` (or any name you prefer) |
-
-5. Click **"Create Service"**
-6. Wait 2-3 minutes for the service to be provisioned (status will change to "Running")
-
-### 1.3 Get Database Connection Details
-
-1. Once the service is running, click on your PostgreSQL service
-2. Go to the **"Overview"** tab
-3. Find the **"Connection Information"** section
-4. Note down these values:
-
-   ```
-   Host:     <your-service-name>-<project-name>.aivencloud.com
-   Port:     <port-number> (usually 12345 or similar)
-   Database: defaultdb
-   User:     avnadmin
-   Password: <your-password> (click "Show" to reveal)
-   ```
-
-5. You can also copy the **Service URI** which contains all connection details:
-   ```
-   postgres://avnadmin:<password>@<host>:<port>/defaultdb?sslmode=require
-   ```
-
-### 1.4 Download SSL Certificate (Required for Aiven)
-
-1. In your service's **Overview** tab
-2. Scroll to **"CA Certificate"** section
-3. Click **"Download"** to get the `ca.pem` file
-4. Save this file - you'll need it for secure connections
-
----
-
-## Step 2: Update Backend Database Configuration
-
-### 2.1 Modify Database Connection in Backend
-
-Edit the `backend/main.py` file and update the `get_connection()` function with your Aiven credentials:
-
-```python
-def get_connection():
-    return psycopg2.connect(
-        host="<your-host>.aivencloud.com",      # Aiven host
-        port="<port>",                           # Aiven port (e.g., 12345)
-        database="defaultdb",                    # Aiven default database
-        user="avnadmin",                         # Aiven username
-        password="<your-aiven-password>",        # Aiven password
-        sslmode="require"                        # Required for Aiven
-    )
-```
-
-**Example with actual values:**
-
-```python
-def get_connection():
-    return psycopg2.connect(
-        host="XXXXXXXXX.aivencloud.com",
-        port="XXXXXXX",
-        database="XXXXXXXX",
-        user="XXXXXXX",
-        password="XXXXXXXXXX",
-        sslmode="require"
-    )
-```
-
-### 2.2 Using Environment Variables (Recommended for Production)
-
-For better security, use environment variables instead of hardcoding credentials:
-
-**Update `main.py`:**
-
-```python
-import os
-
-def get_connection():
-    return psycopg2.connect(
-        host=os.environ.get("DB_HOST"),
-        port=os.environ.get("DB_PORT", "5432"),
-        database=os.environ.get("DB_NAME", "defaultdb"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        sslmode="require"
-    )
-```
-
-### 2.3 Test the Connection Locally
-
-```bash
-cd backend
-python -c "from main import get_connection; conn = get_connection(); print('Connection successful!'); conn.close()"
-```
-
----
-
-## Step 3: Deploy Backend on Render
-
-### 3.1 Prepare for Deployment
-
-1. **Create a `render.yaml`** file in the `backend/` directory (optional, for Blueprint):
-
-   ```yaml
-   services:
-     - type: web
-       name: iot-water-tank-api
-       env: python
-       buildCommand: pip install -r requirements.txt
-       startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-   ```
-
-2. **Ensure `requirements.txt`** has all dependencies:
-   ```
-   requests
-   psycopg2-binary
-   fastapi
-   uvicorn
-   pydantic
-   ```
-
-3. **Push code to GitHub**:
-   ```bash
-   git add .
-   git commit -m "Configure backend for cloud deployment"
-   git push origin main
-   ```
-
-### 3.2 Create Render Account and Deploy
-
-1. Go to [https://render.com/](https://render.com/)
-2. Click **"Get Started for Free"** and sign up (GitHub recommended)
-3. Click **"New +"** → **"Web Service"**
-
-### 3.3 Configure Web Service
-
-1. **Connect Repository**:
-   - Select **"Build and deploy from a Git repository"**
-   - Connect your GitHub account if not already connected
-   - Select the repository: `College-Research-Affiliate-Program-26`
-
-2. **Configure Service Settings**:
-
-   | Setting | Value |
-   |---------|-------|
-   | **Name** | `iot-water-tank-api` |
-   | **Region** | Choose closest to your users |
-   | **Branch** | `main` |
-   | **Root Directory** | `backend` |
-   | **Runtime** | `Python 3` |
-   | **Build Command** | `pip install -r requirements.txt` |
-   | **Start Command** | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
-   | **Instance Type** | `Free` |
-
-3. **Add Environment Variables**:
-   
-   Scroll to **"Environment Variables"** section and add:
-
-   | Key | Value |
-   |-----|-------|
-   | `DB_HOST` | `<your-aiven-host>.aivencloud.com` |
-   | `DB_PORT` | `<your-aiven-port>` |
-   | `DB_NAME` | `defaultdb` |
-   | `DB_USER` | `avnadmin` |
-   | `DB_PASSWORD` | `<your-aiven-password>` |
-
-4. Click **"Create Web Service"**
-
-### 3.4 Wait for Deployment
-
-1. Render will build and deploy your backend (takes 2-5 minutes)
-2. Watch the build logs for any errors
-3. Once deployed, you'll get a URL like:
-   ```
-   https://iot-water-tank-api.onrender.com
-   ```
-
-### 3.5 Verify Backend Deployment
-
-Test your deployed API:
-
-```bash
-# Test root endpoint
-curl https://iot-water-tank-api.onrender.com/
-
-# Test sensor data endpoint
-curl https://iot-water-tank-api.onrender.com/sensor-data
-
-# Test API docs (Swagger UI)
-# Open in browser: https://iot-water-tank-api.onrender.com/docs
-```
-
----
-
-## Step 4: Update Frontend with Deployed Backend URL
-
-### 4.1 Update Config File
-
-Edit `frontend/src/config.js` and replace the localhost URL with your Render URL:
-
-```javascript
-// src/config.js
-// Central config for API URLs and other constants
-
-const API_BASE_URL = "https://iot-water-tank-api.onrender.com";  // Your Render URL
-
-export default {
-  API_BASE_URL,
-  SENSOR_DATA_URL: `${API_BASE_URL}/sensor-data`,
-  TANK_PARAMETERS_URL: `${API_BASE_URL}/tank-parameters`,
-};
-```
-
-### 4.2 Using Environment Variables (Recommended)
-
-For flexibility between development and production:
-
-**Create `.env` file in `frontend/`:**
-
-```env
-REACT_APP_API_BASE_URL=https://iot-water-tank-api.onrender.com
-```
-
-**Update `config.js`:**
-
-```javascript
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000";
-
-export default {
-  API_BASE_URL,
-  SENSOR_DATA_URL: `${API_BASE_URL}/sensor-data`,
-  TANK_PARAMETERS_URL: `${API_BASE_URL}/tank-parameters`,
-};
-```
-
-### 4.3 Test Frontend Locally
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Open [http://localhost:3000](http://localhost:3000) and verify data loads from the deployed backend.
-
----
-
-## Step 5: Deploy Frontend (Optional)
-
-### Deploy to Vercel, Netlify, or Render Static Site
-
-**Vercel:**
-```bash
-npm install -g vercel
-cd frontend
-vercel
-```
-
-**Netlify:**
-1. Go to [netlify.com](https://netlify.com)
-2. Drag and drop the `frontend/build` folder after running `npm run build`
-
-**Render Static Site:**
-1. Create new "Static Site" on Render
-2. Set root directory to `frontend`
-3. Build command: `npm install && npm run build`
-4. Publish directory: `build`
-
----
-
-## Local Development Setup
-
-### Backend
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python main.py
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
----
-
-## Environment Variables Reference
-
-### Backend (Render)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `DB_HOST` | Aiven PostgreSQL host | `xxx.aivencloud.com` |
-| `DB_PORT` | Database port | `12345` |
-| `DB_NAME` | Database name | `defaultdb` |
-| `DB_USER` | Database username | `avnadmin` |
-| `DB_PASSWORD` | Database password | `AVNS_xxx...` |
-
-### Frontend
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `REACT_APP_API_BASE_URL` | Backend API URL | `https://xxx.onrender.com` |
-
----
-
-## Troubleshooting
-
-### Backend Issues
-
-1. **Database connection failed**
-   - Verify Aiven credentials are correct
-   - Ensure `sslmode=require` is set
-   - Check if Aiven service is running
-
-2. **Render deployment failed**
-   - Check build logs for errors
-   - Verify `requirements.txt` is in the `backend/` directory
-   - Ensure Python version compatibility
-
-### Frontend Issues
-
-1. **CORS errors**
-   - Verify backend has CORS middleware configured
-   - Check API URL is correct in config
-
-2. **Data not loading**
-   - Open browser DevTools → Network tab
-   - Verify API requests are going to correct URL
-   - Check for JavaScript console errors
-
----
-
-## ML Models
-
-The `ml_model/` directory contains Jupyter notebooks for water disaggregation analysis:
-
-- **Model_Learning_Animations.ipynb** - Animated visualizations of model training
-- **Model_Learning_Visualizations.ipynb** - Static training visualizations
-- **Water_Disaggregation_Final.ipynb** - Main analysis notebook
-
-Saved models available:
-- CNN, GRU, LSTM models (trained and visualization versions)
-
----
-
-## API Documentation
-
-Once the backend is running, access interactive API documentation:
-
-- **Swagger UI**: `http://<backend-url>/docs`
-- **ReDoc**: `http://<backend-url>/redoc`
-
----
+- API running on `http://127.0.0.1:8000`
+- CORS headers enabled (already configured)
+- Endpoints as documented above
 
 ## License
 
 This project is part of the College Research Affiliate Program.
-
----
-
-## Support
-
-For issues or questions, please open a GitHub issue in this repository.
