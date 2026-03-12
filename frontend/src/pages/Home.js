@@ -31,7 +31,7 @@ const Home = () => {
   };
 
   // Get time range parameters based on selection
-  const getTimeRangeParams = () => {
+  
     const now = new Date();
     let fromDate, toDate;
 
@@ -279,14 +279,14 @@ const Home = () => {
     if (selectedTimeRange && selectedNode) {
       fetchSensorData();
     }
-  }, [selectedTimeRange]);
+  }, [selectedTimeRange, selectedNode]);
 
   // Effect to refetch sensor data when custom dates change
   useEffect(() => {
     if (selectedTimeRange === 'custom' && customFromDate && customToDate && selectedNode) {
       fetchSensorData();
     }
-  }, [customFromDate, customToDate]);
+  }, [customFromDate, customToDate,selectedNode, selectedTimeRange]);
 
   return (
     <div className="home-page">
@@ -541,6 +541,6 @@ const Home = () => {
       </div>
     </div>
   );
-};
+
 
 export default Home;
