@@ -9,7 +9,4 @@ export default {
   SENSOR_DATA_URL: `${API_BASE_URL}/sensor-data`,
   TANK_PARAMETERS_URL: `${API_BASE_URL}/tank-parameters`,
 };
-<<<<<<< HEAD
-=======
 
->>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
