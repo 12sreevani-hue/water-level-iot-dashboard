@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import config from '../config';
-
+import config from "../config.js";
 const NodeCreation = () => {
   const [formData, setFormData] = useState({
     node_id: '',
