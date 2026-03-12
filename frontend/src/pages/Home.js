@@ -77,8 +77,7 @@ const Home = () => {
       setLoading(true);
       // Add tank_id parameter if a node is selected
       // Map the selected node to actual tank_id used in sensor data
-      const actualTankId = selectedNode ? getActualTankId(selectedNode) : null;
-      const timeParams = getTimeRangeParams();
+  
 
       let url = config.SENSOR_DATA_URL;
 
