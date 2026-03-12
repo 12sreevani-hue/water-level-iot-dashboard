@@ -60,9 +60,5 @@ const Sidebar = ({ isOpen, onClose }) => {
     </>
   );
 };
+export default Sidebar;
 
-<<<<<<< HEAD
-export default Sidebar;
-=======
-export default Sidebar;
->>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
