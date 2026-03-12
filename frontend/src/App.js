@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import NodeCreation from './pages/NodeCreation';
@@ -17,7 +16,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar onToggleSidebar={toggleSidebar} />
+  
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={`main-content ${sidebarOpen ? 'sidebar-open' : ''}`}>
           <Routes>
