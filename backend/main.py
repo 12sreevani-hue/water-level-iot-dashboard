@@ -341,5 +341,28 @@ def start_background_tasks():
 # ==============================
 # MAIN
 # ==============================
+@app.post("/predict")
+def predict(distance: float, temperature: float):
+
+    water_level = 200 - distance
+
+    return {
+        "distance": distance,
+        "temperature": temperature,
+        "predicted_water_level": water_level
+    }
+@app.get("/prediction-history")
+def prediction_history():
+    return {
+        "message": "Prediction history endpoint",
+        "data": []
+    }
+@app.get("/model-info")
+def model_info():
+    return {
+        "model_name": "Water Level Prediction Model",
+        "version": "1.0",
+        "description": "Simple prediction based on distance sensor"
+    }
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
