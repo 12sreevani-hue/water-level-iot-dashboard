@@ -286,7 +286,7 @@ const Home = () => {
     if (selectedTimeRange === 'custom' && customFromDate && customToDate && selectedNode) {
       fetchSensorData();
     }
-  }, [customFromDate, customToDate,selectedNode, selectedTimeRange]);
+  }, [customFromDate,customToDate,selectedNode,selectedTimeRange]);
 
   return (
     <div className="home-page">
