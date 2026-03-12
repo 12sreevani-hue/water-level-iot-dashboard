@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 requests
 psycopg2-binary
 fastapi
 uvicorn
 pydantic
+=======
+requests
+psycopg2-binary
+fastapi
+uvicorn
+pydantic
+>>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
 python-dotenv

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+<<<<<<< HEAD
 import config from '../config';
 
+=======
+import config from "../config";
+>>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
 const NodeCreation = () => {
   const [formData, setFormData] = useState({
     node_id: '',
@@ -317,3 +321,7 @@ const NodeCreation = () => {
 };
 
 export default NodeCreation;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
