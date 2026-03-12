@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
-<<<<<<< HEAD
+
 import config from '../config';
-=======
-import config from "../config";
->>>>>>> 42a9945e2739b788aa67b2286763ebc46a2d4467
 
 const Home = () => {
   const [waterLevel, setWaterLevel] = useState(0);
