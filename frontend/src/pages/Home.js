@@ -9,6 +9,7 @@ const Home = () => {
   const [temperature, setTemperature] = useState(0);
 
   const [waterLevelData, setWaterLevelData] = useState([]);
+  const [temperatureData, setTemperatureData] = useState([]);
   
 
   const [loading, setLoading] = useState(true);
