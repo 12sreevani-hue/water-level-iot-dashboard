@@ -53,8 +53,7 @@ const Home = () => {
 
       if (sensorData.length > 0) {
 
-        setHasDataForNode(true);
-        setNodeDataMessage("");
+        
 
         const latest = sensorData[0];
 
@@ -105,13 +104,11 @@ const Home = () => {
         });
 
         setWaterLevelData(waterData);
-        setTemperatureData(tempData);
+        
 
       } else {
 
-        setHasDataForNode(false);
-        setNodeDataMessage("No sensor data available");
-
+        
         setWaterLevel(0);
         setTemperature(0);
         setWaterLevelData([]);
@@ -123,9 +120,7 @@ const Home = () => {
 
       console.error("Error fetching sensor data:", error);
 
-      setHasDataForNode(false);
-      setNodeDataMessage("Error fetching sensor data");
-
+            
     } finally {
 
       setLoading(false);
