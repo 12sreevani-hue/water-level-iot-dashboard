@@ -10,21 +10,13 @@ const Home = () => {
 
   const [waterLevelData, setWaterLevelData] = useState([]);
   const [temperatureData, setTemperatureData] = useState([]);
-  
 
   const [loading, setLoading] = useState(true);
 
   const [nodes, setNodes] = useState([]);
   const [selectedNode, setSelectedNode] = useState("");
 
-  
-  
-
-  
-  
-  const [customToDate, setCustomToDate] = useState("");
-
-  // Node ID mapping
+  // Node mapping
   const getActualTankId = (nodeId) => {
     const mapping = {
       "Node 1": "NODE_001",
@@ -54,16 +46,11 @@ const Home = () => {
 
       if (sensorData.length > 0) {
 
-        
-
         const latest = sensorData[0];
-
-        const selectedNodeData = nodes.find(n => n.id === selectedNode);
-        const tankHeight = selectedNodeData?.tank_height || 200;
 
         const waterLevelPercentage = Math.min(
           100,
-          Math.round(((tankHeight - latest.distance) / tankHeight) * 100)
+          Math.round(((200 - latest.distance) / 200) * 100)
         );
 
         setWaterLevel(waterLevelPercentage);
@@ -80,14 +67,13 @@ const Home = () => {
 
           const percentage = Math.min(
             100,
-            Math.round(((tankHeight - item.distance) / tankHeight) * 100)
+            Math.round(((200 - item.distance) / 200) * 100)
           );
 
           return {
             time: time,
             value: percentage
           };
-
         });
 
         const tempData = reversedData.map(item => {
@@ -105,15 +91,7 @@ const Home = () => {
         });
 
         setWaterLevelData(waterData);
-        
-
-      } else {
-
-        
-        setWaterLevel(0);
-        setTemperature(0);
-        setWaterLevelData([]);
-        setTemperatureData([]);
+        setTemperatureData(tempData);
 
       }
 
@@ -121,7 +99,6 @@ const Home = () => {
 
       console.error("Error fetching sensor data:", error);
 
-            
     } finally {
 
       setLoading(false);
@@ -142,7 +119,7 @@ const Home = () => {
 
       const transformedNodes = nodesData.map(node => ({
         id: node.node_id,
-        tank_height: node.tank_height_cm
+        name: node.node_id
       }));
 
       setNodes(transformedNodes);
@@ -158,36 +135,26 @@ const Home = () => {
     }
   };
 
-  // Node change
   const handleNodeChange = (event) => {
-
     const nodeId = event.target.value;
-
     setSelectedNode(nodeId);
-
   };
 
   // Initial load
-  // eslint-disable-next-line
-
   useEffect(() => {
 
     fetchNodes();
     fetchSensorData();
-    
+
     const interval = setInterval(() => {
       fetchSensorData();
     }, 30000);
 
     return () => clearInterval(interval);
-    
-
 
   }, []);
 
   // Refetch when node changes
-  // eslint-disable-next-line
-
   useEffect(() => {
 
     if (selectedNode) {
@@ -206,7 +173,10 @@ const Home = () => {
 
         <label>Tank:</label>
 
-        <select value={selectedNode} onChange={handleNodeChange}>
+        <select
+          value={selectedNode}
+          onChange={handleNodeChange}
+        >
 
           <option value="">Select Tank</option>
 
@@ -249,7 +219,7 @@ const Home = () => {
               type="monotone"
               dataKey="value"
               stroke="#2196F3"
-              strokeWidth={3}
+              strokeWidth="3"
             />
 
           </LineChart>
@@ -261,6 +231,8 @@ const Home = () => {
     </div>
 
   );
+
 };
 
 export default Home;
+  
