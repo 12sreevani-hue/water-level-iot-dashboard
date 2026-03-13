@@ -1,5 +1,4 @@
 const fetchSensorData = async () => {
-
   try {
 
     setLoading(true);
@@ -62,5 +61,4 @@ const fetchSensorData = async () => {
     setLoading(false);
 
   }
-
 };
