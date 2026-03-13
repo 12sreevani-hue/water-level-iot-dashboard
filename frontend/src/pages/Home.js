@@ -75,7 +75,7 @@ const Home = () => {
           };
         });
 
-        const tempData = reversedData.map(item => {
+        
 
           const time = new Date(item.created_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -87,7 +87,7 @@ const Home = () => {
             value: Math.round(item.temperature * 10) / 10
           };
 
-        });
+        
 
         setWaterLevelData(waterData);
         
@@ -154,7 +154,7 @@ const Home = () => {
 
   }, []);
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
 
     if (selectedNode) {
