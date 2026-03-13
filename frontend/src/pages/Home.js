@@ -9,18 +9,18 @@ const Home = () => {
   const [temperature, setTemperature] = useState(0);
 
   const [waterLevelData, setWaterLevelData] = useState([]);
-  const [temperatureData, setTemperatureData] = useState([]);
+  
 
   const [loading, setLoading] = useState(true);
 
   const [nodes, setNodes] = useState([]);
   const [selectedNode, setSelectedNode] = useState("");
 
-  const [hasDataForNode, setHasDataForNode] = useState(true);
-  const [nodeDataMessage, setNodeDataMessage] = useState("");
+  
+  
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState("all");
-  const [customFromDate, setCustomFromDate] = useState("");
+  
+  
   const [customToDate, setCustomToDate] = useState("");
 
   // Node ID mapping
@@ -172,20 +172,26 @@ const Home = () => {
   };
 
   // Initial load
+  // eslint-disable-next-line
+
   useEffect(() => {
 
     fetchNodes();
     fetchSensorData();
-
+    
     const interval = setInterval(() => {
       fetchSensorData();
     }, 30000);
 
     return () => clearInterval(interval);
+    
+
 
   }, []);
 
   // Refetch when node changes
+  // eslint-disable-next-line
+
   useEffect(() => {
 
     if (selectedNode) {
