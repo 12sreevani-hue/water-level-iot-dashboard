@@ -9,8 +9,7 @@ const Home = () => {
   const [temperature, setTemperature] = useState(0);
 
   const [waterLevelData, setWaterLevelData] = useState([]);
-  const [temperatureData, setTemperatureData] = useState([]);
-  
+  c
   const [loading, setLoading] = useState(true);
 
   const [nodes, setNodes] = useState([]);
@@ -156,7 +155,7 @@ const Home = () => {
 
   }, []);
 
-  // Refetch when node changes
+  // eslint-disable-next-line
   useEffect(() => {
 
     if (selectedNode) {
