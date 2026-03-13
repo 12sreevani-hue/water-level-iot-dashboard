@@ -9,7 +9,7 @@ const Home = () => {
   const [temperature, setTemperature] = useState(0);
 
   const [waterLevelData, setWaterLevelData] = useState([]);
-  c
+  
   const [loading, setLoading] = useState(true);
 
   const [nodes, setNodes] = useState([]);
@@ -90,8 +90,7 @@ const Home = () => {
         });
 
         setWaterLevelData(waterData);
-        setTemperatureData(tempData);
-
+        
       }
 
     } catch (error) {
