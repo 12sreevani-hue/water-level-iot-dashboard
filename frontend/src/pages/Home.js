@@ -57,19 +57,7 @@ const Home = () => {
 
         const reversedData = [...sensorData].reverse();
 
-        const waterData = reversedData.map(item => {
-
-          const time = new Date(item.created_at).toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit"
-          });
-
-          const percentage = Math.min(
-            100,
-            Math.round(((200 - item.distance) / 200) * 100)
-          );
-
-        })
+        
 
         
 const waterData = reversedData.map(item => {
