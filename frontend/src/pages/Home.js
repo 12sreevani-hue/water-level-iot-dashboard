@@ -9,8 +9,7 @@ const Home = () => {
   const [temperature, setTemperature] = useState(0);
 
   const [waterLevelData, setWaterLevelData] = useState([]);
-  const [temperatureData, setTemperatureData] = useState([]);
-
+  
   const [loading, setLoading] = useState(true);
 
   const [nodes, setNodes] = useState([]);
@@ -141,6 +140,7 @@ const Home = () => {
   };
 
   // Initial load
+  // eslint-disable-next-line
   useEffect(() => {
 
     fetchNodes();
@@ -151,6 +151,7 @@ const Home = () => {
     }, 30000);
 
     return () => clearInterval(interval);
+    
 
   }, []);
 
