@@ -64,7 +64,7 @@ const waterData = reversedData.map(item => {
   return {
     value: percentage
   };
-}):
+});
     setWaterLevelData(waterData);
         
       }
