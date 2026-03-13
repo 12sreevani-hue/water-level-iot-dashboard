@@ -69,27 +69,15 @@ const Home = () => {
             Math.round(((200 - item.distance) / 200) * 100)
           );
 
-          return {
-            time: time,
-            value: percentage
-          };
-        });
+        })
 
         
-
-          const time = new Date(item.created_at).toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit"
-          });
-
-          return {
-            time: time,
-            value: Math.round(item.temperature * 10) / 10
-          };
-
-        
-
-        setWaterLevelData(waterData);
+const waterData = reversedData.map(item => {
+  return {
+    value: percentage
+  };
+}):
+    setWaterLevelData(waterData);
         
       }
 
