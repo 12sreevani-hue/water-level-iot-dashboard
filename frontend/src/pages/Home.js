@@ -76,9 +76,8 @@ const Home = () => {
       setLoading(true);
       // Add tank_id parameter if a node is selected
       // Map the selected node to actual tank_id used in sensor data
-      const actualTankId = selectedNode ? getActualTankId(selectedNode) : null;
-      const timeParams = getTimeRangeParams();
-
+      
+    
       let url = config.SENSOR_DATA_URL;
 
       const response = await axios.get(url, {
@@ -265,7 +264,8 @@ const Home = () => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, 
+  []);
 
   // Effect to refetch sensor data when selectedNode changes
   useEffect(() => {
@@ -279,14 +279,16 @@ const Home = () => {
     if (selectedTimeRange && selectedNode) {
       fetchSensorData();
     }
-  }, [selectedTimeRange]);
+  }, [selectedTimeRange]
+);
 
   // Effect to refetch sensor data when custom dates change
   useEffect(() => {
     if (selectedTimeRange === 'custom' && customFromDate && customToDate && selectedNode) {
       fetchSensorData();
     }
-  }, [customFromDate, customToDate]);
+  }, [customFromDate, customToDate]
+);
 
   return (
     <div className="home-page">
