@@ -1,5 +1,5 @@
 import React from 'react';
-import collegeLogo from "../assets/college-logo.png";
+import collegeLogo from "../assets/college-logo.jpeg";
 const Navbar = ({ onToggleSidebar }) => {
   return (
     <nav className="navbar">
