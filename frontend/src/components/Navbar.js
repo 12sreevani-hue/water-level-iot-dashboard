@@ -16,7 +16,7 @@ const Navbar = ({ onToggleSidebar }) => {
       </div>
       
       <div className="navbar-center">
-        <h1 className="navbar-title">IOT Dashboard</h1>
+        <h1 className="navbar-title">IOT Dashboard App</h1>
       </div>
       
       {/* <div className="navbar-right">
